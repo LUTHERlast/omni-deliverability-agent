@@ -33,7 +33,7 @@
     "market": "High-Growth B2B SaaS, Outbound Sales Agencies & Remote Teams",
     "model": "Cryptographic DNS Vulnerability Auditing & Secondary Domain Setup",
     "local_url": "http://127.0.0.1:8686",
-    "cloud_url": "http://127.0.0.1:8686",
+    "cloud_url": "https://omni-deliverability-agent.onrender.com",
     "dashboard_path": "/",
     "stats_endpoint": "/api/stats",
     "health_endpoint": "/api/health",
