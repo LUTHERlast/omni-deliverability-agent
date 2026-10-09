@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice {{ invoice_num }} &bull; {{ lead.company_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen py-12 px-4 sm:px-6">
+    <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl space-y-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-8 gap-4">
+            <div>
+                <span class="text-xs font-mono text-blue-400 font-bold uppercase tracking-widest">OFFICIAL SERVICE INVOICE</span>
+                <h1 class="text-2xl font-black text-white font-mono mt-1">{{ invoice_num }}</h1>
+                <p class="text-xs text-slate-400 mt-1">Issued Date: {{ lead.created_at.strftime('%B %d, %Y') }}</p>
+            </div>
+            <div class="text-right">
+                <div class="text-sm font-bold text-white">{{ settings.OPERATOR_NAME }}</div>
+                <div class="text-xs text-slate-400">{{ settings.OPERATOR_TITLE }}</div>
+                <div class="text-xs text-slate-400">{{ settings.OPERATOR_EMAIL }}</div>
+            </div>
+        </div>
+
+        <!-- Billed To -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs">
+            <div>
+                <span class="text-slate-500 font-mono uppercase font-bold text-[10px]">BILLED TO</span>
+                <div class="text-sm font-bold text-white mt-1">{{ lead.company_name }}</div>
+                <div class="text-slate-400 mt-0.5">{{ lead.domain }}</div>
+                <div class="text-slate-400">{{ lead.contact_email }}</div>
+            </div>
+            <div>
+                <span class="text-slate-500 font-mono uppercase font-bold text-[10px]">SETTLEMENT STATUS</span>
+                <div class="mt-1">
+                    <span class="px-2.5 py-1 rounded-full font-bold text-xs {% if lead.status == 'WON' %}bg-emerald-500/20 text-emerald-400{% else %}bg-amber-500/20 text-amber-400{% endif %}">
+                        {% if lead.status == 'WON' %}PAID & SETTLED{% else %}PAYMENT PENDING{% endif %}
+                    </span>
+                </div>
+                <div class="text-slate-400 mt-2">Due on Receipt &bull; 100% Async Delivery</div>
+            </div>
+        </div>
+
+        <!-- Line Items -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-mono uppercase font-bold text-slate-400">INVOICE BREAKDOWN</h3>
+            <table class="w-full text-left text-xs">
+                <thead class="border-b border-slate-800 text-slate-400 font-mono">
+                    <tr>
+                        <th class="py-2">Deliverable Item</th>
+                        <th class="py-2 text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 text-slate-200">
+                    <tr>
+                        <td class="py-4">
+                            <div class="font-bold text-white text-sm">Turnkey Deliverability & DNS Authentication Sprint</div>
+                            <div class="text-slate-400 text-xs mt-1">
+                                Complete SPF record alignment, DMARC policy deployment (p=quarantine), DKIM key verification, and custom tracking domain configuration for {{ lead.domain }}.
+                            </div>
+                        </td>
+                        <td class="py-4 text-right font-mono font-bold text-white text-sm">
+                            AED {{ "{:,.2f}".format(lead.deal_value) }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="border-t border-slate-800 pt-4 flex justify-between items-center text-sm font-mono">
+                <span class="text-slate-400">Total Settlement Due</span>
+                <span class="text-2xl font-black text-emerald-400">AED {{ "{:,.2f}".format(lead.deal_value) }}</span>
+            </div>
+        </div>
+
+        <!-- Payment Settlement Box -->
+        <div class="bg-blue-950/30 border border-blue-500/30 rounded-2xl p-6 space-y-4 text-xs">
+            <h4 class="font-bold text-white text-sm">💳 Instant Payment & Deployment Options</h4>
+            <p class="text-slate-300 leading-relaxed">
+                To confirm deployment, you can settle via Stripe Card or Direct Bank Transfer. Upon settlement confirmation, our deliverability infrastructure team executes the DNS changes and validates inbox delivery within 24 hours.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <a href="https://t.me/dreamer_comrade" target="_blank" class="flex-1 text-center py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition">
+                    Instant Telegram Confirmation (@dreamer_comrade) &rarr;
+                </a>
+                <a href="mailto:{{ settings.OPERATOR_EMAIL }}?subject=Payment%20Confirmation%20for%20{{ invoice_num }}" class="flex-1 text-center py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition">
+                    Confirm via Email &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-xs font-mono border-t border-slate-800 pt-6">
+            {{ settings.APP_NAME }} &bull; Operated by {{ settings.OPERATOR_NAME }} &bull; {{ settings.OPERATOR_EMAIL }}
+        </div>
+
+    </div>
+</body>
+</html>

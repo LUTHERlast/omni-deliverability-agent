@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniFleet Master Portfolio | Autonomous Multi-Agent Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070b14;
+      color: #f1f5f9;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+    .glow-blue {
+      box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25);
+    }
+    .pulse-dot {
+      animation: pulseAnimation 2s infinite;
+    }
+    @keyframes pulseAnimation {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+
+  <!-- Top Executive Header -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Logo & Empire Indicator -->
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-white font-extrabold text-lg">
+          Ω
+        </div>
+        <div>
+          <div class="flex items-center space-x-2.5">
+            <h1 class="text-lg font-bold tracking-tight text-white">OmniFleet Command</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800/50">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 pulse-dot"></span>
+              MULTI-AGENT ACTIVE
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Autonomous Revenue Generation Empire &bull; Athul Raj Portfolio</p>
+        </div>
+      </div>
+
+      <!-- Live Controls & Actions -->
+      <div class="flex items-center flex-wrap gap-2.5">
+        <!-- Live Polling Counter -->
+        <div class="flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300 font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>Live Sync: <span id="countdown">10s</span></span>
+        </div>
+
+        <!-- Manual Refresh Button -->
+        <button onclick="refreshData(true)" class="inline-flex items-center px-3 py-1.5 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 transition">
+          <svg class="w-3.5 h-3.5 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Refresh Now
+        </button>
+
+        <!-- Add Future Agent Button -->
+        <button onclick="openAddAgentModal()" class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-md shadow-emerald-500/20 transition transform active:scale-95">
+          <svg class="w-4 h-4 mr-1.5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          + Add Future Agent
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Empire Macro KPI Summary Banner -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-sm font-semibold tracking-wider uppercase text-slate-400 font-mono">Consolidated Empire Financials</h2>
+          <p class="text-xs text-slate-500">Live multi-currency aggregation across all autonomous instances</p>
+        </div>
+        <div class="flex items-center space-x-2 text-xs text-slate-400">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Brevo Sender: <strong class="text-slate-200">athulaisolutions@gmail.com</strong></span>
+          <span class="text-slate-600">&bull;</span>
+          <span>Telegram: <strong class="text-slate-200">@dreamer_comrade</strong></span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Pipeline -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-500 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">Combined Active Pipeline</span>
+            <span class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-mono font-bold">TOTAL</span>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="kpi-pipeline-aed">AED ...</div>
+            <div class="text-xs font-mono text-emerald-400 font-medium mt-1" id="kpi-pipeline-sub">Total Active Pipeline (AED)</div>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-400 flex items-center">
+            <span class="text-emerald-400 font-medium mr-1.5">&uarr; Multi-market</span>
+            <span>Real-time aggregate across all active deals</span>
+          </div>
+        </div>
+
+        <!-- Cash Won / Closed -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">Real Cash Collected</span>
+            <span class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 text-xs font-mono font-bold">WON</span>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="kpi-won-aed">AED ...</div>
+            <div class="text-xs font-mono text-cyan-400 font-medium mt-1" id="kpi-won-sub">Verified Cash Collected (AED)</div>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-400 flex items-center">
+            <span class="text-cyan-400 font-medium mr-1.5" id="kpi-won-count">... deals closed</span>
+            <span>Zero manual phone calls required</span>
+          </div>
+        </div>
+
+        <!-- Outbound Dispatches & Outreach -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-blue-500 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">Autonomous Outbound</span>
+            <span class="p-2 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-mono font-bold">DISPATCHED</span>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="kpi-total-emails">...</div>
+            <div class="text-xs font-mono text-blue-400 font-medium mt-1" id="kpi-total-leads">... Qualified Prospects</div>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-400 flex items-center">
+            <span class="text-blue-400 font-medium mr-1.5">100% Brevo API</span>
+            <span>Anti-spam staggered intervals</span>
+          </div>
+        </div>
+
+        <!-- Active Fleets & Health -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-500 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">Fleet Operations</span>
+            <span class="p-2 rounded-lg bg-purple-500/10 text-purple-400 text-xs font-mono font-bold">HEALTH</span>
+          </div>
+          <div class="mt-3">
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" id="kpi-agents-online">... / ...</div>
+            <div class="text-xs font-mono text-purple-400 font-medium mt-1" id="kpi-system-status">100% Operational</div>
+          </div>
+          <div class="mt-3 text-[11px] text-slate-400 flex items-center">
+            <span class="text-purple-400 font-medium mr-1.5">Background Daemons</span>
+            <span>Port 8585 & 8686 synchronized</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Active Agents Grid Section -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-semibold tracking-wider uppercase text-slate-400 font-mono">Autonomous Fleet Directory</h2>
+          <p class="text-xs text-slate-500">Individual business model performance, live endpoints, and manual cycle triggers</p>
+        </div>
+      </div>
+
+      <!-- Agent Cards Grid -->
+      <div id="agents-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Rendered dynamically via JavaScript -->
+        <div class="glass-card rounded-2xl p-8 text-center text-slate-400 col-span-2">
+          <svg class="animate-spin h-8 w-8 text-emerald-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+          Scanning registered agents and connecting to live daemon ports...
+        </div>
+      </div>
+    </section>
+
+    <!-- Unified Cross-Fleet Real-time Activity Timeline -->
+    <section class="glass-card rounded-2xl p-6 border border-slate-800">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800/80 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            Unified Multi-Agent Activity Feed
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Real-time consolidated actions from all running agents</p>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+          Chronological Stream
+        </span>
+      </div>
+
+      <div id="activity-feed" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+        <div class="text-center text-xs text-slate-500 py-6">Loading consolidated activity logs...</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Add Future Agent Modal -->
+  <div id="add-agent-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-xl w-full p-6 sm:p-8 border border-slate-700 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+            Register New Autonomous Agent
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">Connect Agent 3, 4, 5... into this unified empire dashboard dynamically.</p>
+        </div>
+        <button onclick="closeAddAgentModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="add-agent-form" onsubmit="submitNewAgent(event)" class="mt-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Agent Name *</label>
+          <input type="text" id="new-agent-name" required placeholder="e.g. OmniSEO Engine or OmniVoice Closer" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">System Code ID *</label>
+            <input type="text" id="new-agent-code" required placeholder="e.g. SEO_ENGINE" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 uppercase font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Theme Accent</label>
+            <select id="new-agent-theme" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+              <option value="emerald">Emerald Green</option>
+              <option value="blue">Electric Blue</option>
+              <option value="purple">Vibrant Purple</option>
+              <option value="amber">Warm Amber</option>
+              <option value="cyan">Cyan Aqua</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Value Proposition / Tagline *</label>
+          <input type="text" id="new-agent-tagline" required placeholder="e.g. Turnkey Local SEO Citations & Google Maps Optimization for High-Ticket Medical" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Target Market / Niche *</label>
+          <input type="text" id="new-agent-market" required placeholder="e.g. US Cosmetic Dental Clinics, GCC Law Firms" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Local Port / URL *</label>
+            <input type="text" id="new-agent-local-url" required placeholder="http://127.0.0.1:8787" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Cloud URL (Optional)</label>
+            <input type="text" id="new-agent-cloud-url" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Currency</label>
+            <select id="new-agent-currency" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+              <option value="AED" selected>AED</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Avg Deal Value</label>
+            <input type="number" id="new-agent-deal-size" value="500" step="10" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Primary Metric</label>
+            <input type="text" id="new-agent-metric-label" value="Active Clients" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div id="modal-feedback" class="hidden text-xs p-3 rounded-lg border font-mono"></div>
+
+        <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeAddAgentModal()" class="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+            Cancel
+          </button>
+          <button type="submit" id="save-agent-btn" class="px-5 py-2 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg shadow-md shadow-emerald-500/20 transition">
+            Test & Connect Agent &rarr;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden glass-card border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium flex items-center space-x-2">
+    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-msg">Operation completed.</span>
+  </div>
+
+  <!-- JavaScript Client Application Logic -->
+  <script>
+    let countdownSec = 10;
+    let countdownInterval;
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById("toast");
+      const toastMsg = document.getElementById("toast-msg");
+      toastMsg.innerText = msg;
+      toast.className = isError 
+        ? "fixed bottom-5 right-5 z-50 glass-card border border-rose-500/40 text-rose-300 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium flex items-center space-x-2"
+        : "fixed bottom-5 right-5 z-50 glass-card border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium flex items-center space-x-2";
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 4000);
+    }
+
+    function openAddAgentModal() {
+      document.getElementById("add-agent-modal").classList.remove("hidden");
+      document.getElementById("modal-feedback").classList.add("hidden");
+    }
+
+    function closeAddAgentModal() {
+      document.getElementById("add-agent-modal").classList.add("hidden");
+    }
+
+    async function triggerAgentAction(agentId, actionEndpoint, actionName) {
+      showToast(`Initiating ${actionName} on ${agentId}...`);
+      try {
+        const resp = await fetch(`/api/master/agents/${agentId}/action`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint: actionEndpoint })
+        });
+        const res = await resp.json();
+        showToast(`Success: ${actionName} triggered on ${agentId}!`);
+        setTimeout(() => refreshData(true), 1500);
+      } catch (err) {
+        showToast(`Error triggering ${actionName}: ${err.message}`, true);
+      }
+    }
+
+    async function submitNewAgent(e) {
+      e.preventDefault();
+      const btn = document.getElementById("save-agent-btn");
+      const feedback = document.getElementById("modal-feedback");
+      btn.disabled = true;
+      btn.innerText = "Verifying Connection...";
+
+      const payload = {
+        name: document.getElementById("new-agent-name").value.trim(),
+        code: document.getElementById("new-agent-code").value.trim().toUpperCase(),
+        tagline: document.getElementById("new-agent-tagline").value.trim(),
+        market: document.getElementById("new-agent-market").value.trim(),
+        local_url: document.getElementById("new-agent-local-url").value.trim(),
+        cloud_url: document.getElementById("new-agent-cloud-url").value.trim() || document.getElementById("new-agent-local-url").value.trim(),
+        currency: document.getElementById("new-agent-currency").value,
+        currency_symbol: document.getElementById("new-agent-currency").value === "AED" ? "AED" : (document.getElementById("new-agent-currency").value === "EUR" ? "€" : "$"),
+        usd_exchange_rate: document.getElementById("new-agent-currency").value === "AED" ? 0.2723 : 1.0,
+        default_deal_size: parseFloat(document.getElementById("new-agent-deal-size").value) || 500,
+        theme_color: document.getElementById("new-agent-theme").value,
+        primary_metric_label: document.getElementById("new-agent-metric-label").value.trim() || "Active Clients"
+      };
+
+      try {
+        const res = await fetch("/api/master/agents/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          feedback.className = "text-xs p-3 rounded-lg border font-mono bg-emerald-950/80 border-emerald-700 text-emerald-300 block";
+          feedback.innerText = `✓ Connected! Agent registered successfully: ${payload.name}`;
+          setTimeout(() => {
+            closeAddAgentModal();
+            refreshData(true);
+            btn.disabled = false;
+            btn.innerText = "Test & Connect Agent →";
+          }, 1200);
+        } else {
+          feedback.className = "text-xs p-3 rounded-lg border font-mono bg-rose-950/80 border-rose-700 text-rose-300 block";
+          feedback.innerText = `Connection Failed: ${data.detail || data.error || "Could not reach agent port."}`;
+          btn.disabled = false;
+          btn.innerText = "Test & Connect Agent →";
+        }
+      } catch (err) {
+        feedback.className = "text-xs p-3 rounded-lg border font-mono bg-rose-950/80 border-rose-700 text-rose-300 block";
+        feedback.innerText = `Network Error: ${err.message}`;
+        btn.disabled = false;
+        btn.innerText = "Test & Connect Agent →";
+      }
+    }
+
+    async function refreshData(force = false) {
+      if (force) {
+        countdownSec = 10;
+        document.getElementById("countdown").innerText = `${countdownSec}s`;
+      }
+      try {
+        const resp = await fetch("/api/master/stats");
+        if (!resp.ok) return;
+        const data = await resp.json();
+        renderDashboard(data);
+      } catch (err) {
+        console.error("Master dashboard sync error:", err);
+      }
+    }
+
+    function renderDashboard(data) {
+      const summary = data.summary || {};
+      const agents = data.agents || [];
+      const events = data.recent_events || [];
+
+      // 1. Update Macro Financial KPIs
+      document.getElementById("kpi-pipeline-aed").innerText = `AED ${(summary.total_pipeline_aed || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+      document.getElementById("kpi-won-aed").innerText = `AED ${(summary.total_revenue_aed || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+      document.getElementById("kpi-won-count").innerText = `${summary.total_won || 0} deals closed`;
+
+      document.getElementById("kpi-total-emails").innerText = `${(summary.total_emails || 0).toLocaleString()}`;
+      document.getElementById("kpi-total-leads").innerText = `${(summary.total_leads || 0).toLocaleString()} Qualified Prospects`;
+
+      document.getElementById("kpi-agents-online").innerText = `${summary.online_agents || 0} / ${summary.total_agents || 0} Online`;
+      document.getElementById("kpi-system-status").innerText = summary.system_status === "ALL_SYSTEMS_OPERATIONAL" ? "100% Operational" : summary.system_status;
+
+      // 2. Render Agent Cards
+      const grid = document.getElementById("agents-grid");
+      if (agents.length === 0) {
+        grid.innerHTML = `<div class="glass-card rounded-2xl p-8 text-center text-slate-400 col-span-2">No agents registered.</div>`;
+      } else {
+        grid.innerHTML = agents.map(ag => {
+          const stats = ag.live_stats || {};
+          const isOnline = ag.is_online;
+          const currSymbol = ag.currency_symbol || ag.currency;
+          const pipeVal = stats.pipeline_value ? `${currSymbol} ${stats.pipeline_value.toLocaleString()}` : `${currSymbol} 0`;
+          const revWon = stats.actual_revenue ? `${currSymbol} ${stats.actual_revenue.toLocaleString()}` : `${currSymbol} 0`;
+          const activeUrl = ag.active_url || ag.local_url || ag.cloud_url;
+          const latency = ag.latency_ms ? `${ag.latency_ms}ms` : 'offline';
+
+          const themeBorder = ag.theme_color === 'blue' ? 'border-blue-500/40' : (ag.theme_color === 'purple' ? 'border-purple-500/40' : 'border-emerald-500/40');
+          const themeBadge = ag.theme_color === 'blue' ? 'bg-blue-950 text-blue-400 border-blue-800/60' : (ag.theme_color === 'purple' ? 'bg-purple-950 text-purple-400 border-purple-800/60' : 'bg-emerald-950 text-emerald-400 border-emerald-800/60');
+          const themeGlow = ag.theme_color === 'blue' ? 'glow-blue' : 'glow-emerald';
+
+          return `
+            <div class="glass-card rounded-2xl p-6 border ${themeBorder} ${themeGlow} flex flex-col justify-between transition hover:-translate-y-0.5 duration-200">
+              
+              <!-- Card Header -->
+              <div>
+                <div class="flex items-center justify-between gap-3 mb-2">
+                  <div class="flex items-center space-x-2.5">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider ${themeBadge} border">
+                      ${ag.code || ag.id}
+                    </span>
+                    <span class="text-xs font-mono text-slate-400">${ag.market || ''}</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono font-medium ${isOnline ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/50' : 'bg-rose-950/80 text-rose-400 border border-rose-800/50'}">
+                      <span class="w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400 mr-1.5 pulse-dot' : 'bg-rose-400 mr-1.5'}"></span>
+                      ${isOnline ? `ONLINE (${latency})` : 'OFFLINE'}
+                    </span>
+                  </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-white tracking-tight">${ag.name}</h3>
+                <p class="text-xs text-slate-400 mt-1 line-clamp-2">${ag.tagline}</p>
+                <div class="mt-2 text-[11px] font-mono text-slate-500">
+                  <span>Host: <code class="text-slate-300">${ag.local_url}</code></span>
+                  ${ag.cloud_url && ag.cloud_url !== ag.local_url ? ` &bull; <span>Cloud: <a href="${ag.cloud_url}" target="_blank" class="text-emerald-400 hover:underline">Render</a></span>` : ''}
+                </div>
+              </div>
+
+              <!-- Micro Metrics Grid -->
+              <div class="grid grid-cols-4 gap-2 my-5 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800/90 text-center">
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase font-mono">Prospects</div>
+                  <div class="text-base font-bold text-white mt-0.5">${stats.total_leads || 0}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase font-mono">Pipeline</div>
+                  <div class="text-base font-bold text-emerald-400 mt-0.5">${pipeVal}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase font-mono">Won Cash</div>
+                  <div class="text-base font-bold text-cyan-400 mt-0.5">${revWon}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 uppercase font-mono">Dispatches</div>
+                  <div class="text-base font-bold text-blue-400 mt-0.5">${stats.total_emails || 0}</div>
+                </div>
+              </div>
+
+              <!-- Quick Action Button Row -->
+              <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center space-x-2">
+                  <a href="${activeUrl}" target="_blank" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                    Open Dashboard &rarr;
+                  </a>
+                  ${ag.id === 'agent-1' 
+                    ? `<a href="${activeUrl}/client-demo" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium text-emerald-400 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/40 transition">Preview Concierge</a>`
+                    : `<a href="${activeUrl}/audit/scalepathmedia.com" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium text-blue-400 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-800/40 transition">Live DNS Scorecard</a>`
+                  }
+                </div>
+
+                <div class="flex items-center space-x-1.5">
+                  <button onclick="triggerAgentAction('${ag.id}', '${ag.prospect_action_endpoint}', 'Autonomous Prospecting')" class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition" title="Trigger Instant Prospecting / Audit Cycle">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  </button>
+                  <button onclick="triggerAgentAction('${ag.id}', '${ag.followup_action_endpoint || ag.prospect_action_endpoint}', 'Follow-up Sequence')" class="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition" title="Trigger Scheduled Follow-up Cycle">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join("");
+      }
+
+      // 3. Render Combined Activity Feed
+      const feed = document.getElementById("activity-feed");
+      if (events.length === 0) {
+        feed.innerHTML = `<div class="text-center text-xs text-slate-500 py-6">No recent events recorded.</div>`;
+      } else {
+        feed.innerHTML = events.map(ev => {
+          const badgeClass = ev.level === 'HOT' ? 'bg-rose-950 text-rose-300 border-rose-800' : (ev.level === 'SUCCESS' ? 'bg-emerald-950 text-emerald-300 border-emerald-800' : 'bg-slate-900 text-slate-300 border-slate-800');
+          const timeFormatted = ev.timestamp ? new Date(ev.timestamp).toLocaleTimeString() : '';
+          return `
+            <div class="flex items-start justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition text-xs">
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${badgeClass} border">
+                    ${ev.level}
+                  </span>
+                  <span class="font-bold text-white">${ev.agent_name || 'Agent'}:</span>
+                  <span class="text-slate-300">${ev.message}</span>
+                </div>
+                ${ev.details ? `<div class="text-[11px] text-slate-400 font-mono pl-2 border-l border-slate-800 line-clamp-1">${ev.details}</div>` : ''}
+              </div>
+              <span class="text-[10px] font-mono text-slate-500 flex-shrink-0 ml-3">${timeFormatted}</span>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    // Auto-refresh timer loop
+    function startAutoRefresh() {
+      countdownInterval = setInterval(() => {
+        countdownSec--;
+        if (countdownSec <= 0) {
+          countdownSec = 10;
+          refreshData(false);
+        }
+        document.getElementById("countdown").innerText = `${countdownSec}s`;
+      }, 1000);
+    }
+
+    // Initialize on load
+    window.addEventListener("DOMContentLoaded", () => {
+      refreshData(true);
+      startAutoRefresh();
+    });
+  </script>
+</body>
+</html>

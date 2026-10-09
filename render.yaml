@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: omni-deliverability-agent
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python run.py"
+    healthCheckPath: "/api/health"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: APP_NAME
+        value: "OmniDeliverability AI"
+      - key: PORT
+        value: "8686"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: SIMULATION_MODE
+        value: "False"
+      - key: OFFERING_NAME
+        value: "24/7 B2B Inbound Deliverability & Domain Reputation Shield"
+      - key: OFFERING_DESCRIPTION
+        value: "Turnkey Google/Yahoo 2024+ DNS Authentication (SPF, DKIM, DMARC), Secondary Outbound Domain Isolation, and Spam Infiltration Prevention."
+      - key: DEFAULT_DEAL_VALUE
+        value: "1450.0"
+      - key: INFRASTRUCTURE_DEAL_VALUE
+        value: "3650.0"
+      - key: OPERATOR_NAME
+        value: "Athul raj"
+      - key: OPERATOR_TITLE
+        value: "Email Deliverability & Infrastructure Specialist"
+      - key: OPERATOR_EMAIL
+        value: "athulaisolutions@gmail.com"
+      - key: OPERATOR_TELEGRAM
+        value: "@dreamer_comrade"
+      - key: SMTP_ENABLED
+        value: "True"
+      - key: SMTP_HOST
+        value: "smtp-relay.brevo.com"
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: "athulaisolutions@gmail.com"
+      - key: FROM_EMAIL
+        value: "athulaisolutions@gmail.com"
+      - key: FROM_NAME
+        value: "Athul raj"
+      - key: NOTIFY_TELEGRAM
+        value: "True"
+      - key: TELEGRAM_BOT_TOKEN
+        value: "8706330311:AAFpYrvU3kmVVQOHEkYvDHS5WwGQmA_t8yU"
+      - key: TELEGRAM_CHAT_ID
+        value: "@dreamer_comrade"
+      - key: HEARTBEAT_ENABLED
+        value: "True"
+      - key: HEARTBEAT_PING_URL
+        value: "https://hc-ping.com/demo-deliverability-uuid"
+      - key: SMTP_PASSWORD
+        sync: false

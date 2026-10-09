@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Deliverability & Spam Infiltration Audit &bull; {{ audit.domain }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen py-10 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-6 gap-4">
+            <div>
+                <div class="flex items-center space-x-2 text-xs font-mono text-blue-400 uppercase tracking-widest mb-1">
+                    <span>🛡️ Automated Mail Server Diagnostic</span>
+                    <span>&bull;</span>
+                    <span>Google & Yahoo 2024 Compliance</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    Deliverability Audit: <span class="text-blue-400 font-mono">{{ audit.domain }}</span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-1">
+                    Audited for <strong>{{ audit.company_name }}</strong> &bull; Generated {{ audit.created_at.strftime('%B %d, %Y') }}
+                </p>
+            </div>
+            <a href="/checkout/{{ audit.domain }}?tier=primary" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-600/20 transition flex items-center space-x-2">
+                <span>⚡ Order Turnkey Fix &rarr;</span>
+            </a>
+        </header>
+
+
+        <!-- Compliance Warning Banner -->
+        {% if audit.overall_score < 80 %}
+        <div class="bg-rose-950/40 border border-rose-500/30 rounded-2xl p-5 flex items-start space-x-4">
+            <span class="text-2xl">⚠️</span>
+            <div>
+                <h3 class="text-sm font-bold text-rose-300">Google & Yahoo 2024 Sender Authentication Alert</h3>
+                <p class="text-xs text-rose-200/80 mt-1 leading-relaxed">
+                    Under mandatory mail security guidelines enforced by Google Workspace and Yahoo, sending domains missing aligned DMARC policies or clean SPF configurations face automated quarantine. Sales inquiries and customer communications from <strong>{{ audit.domain }}</strong> are currently failing gateway checks.
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Hero Scorecard -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 shadow-xl">
+            <!-- Score Gauge -->
+            <div class="flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-slate-800 pb-6 md:pb-0 md:pr-6">
+                <div class="text-5xl sm:text-6xl font-black font-mono tracking-tight {% if audit.overall_score >= 85 %}text-emerald-400{% elif audit.overall_score >= 60 %}text-amber-400{% else %}text-rose-500{% endif %}">
+                    {{ audit.overall_score }}<span class="text-2xl text-slate-600 font-normal">/100</span>
+                </div>
+                <div class="mt-2 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full {% if audit.overall_score >= 85 %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% elif audit.overall_score >= 60 %}bg-amber-500/10 text-amber-400 border border-amber-500/20{% else %}bg-rose-500/10 text-rose-400 border border-rose-500/20{% endif %}">
+                    {{ audit.risk_level }} SPAM RISK
+                </div>
+                <p class="text-[11px] text-slate-400 mt-3 text-center">Calculated from 7-point cryptographic DNS inspection</p>
+            </div>
+
+            <!-- Estimated Placement -->
+            <div class="flex flex-col justify-center space-y-3">
+                <span class="text-xs font-mono uppercase text-slate-400 font-bold">Estimated Inbox Placement</span>
+                <div class="text-3xl font-extrabold text-white font-mono">
+                    ~{{ audit.inbox_placement_rate }}% <span class="text-xs font-normal text-slate-400">Primary Inbox</span>
+                </div>
+                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+                    <div class="h-full {% if audit.inbox_placement_rate >= 80 %}bg-emerald-500{% elif audit.inbox_placement_rate >= 50 %}bg-amber-500{% else %}bg-rose-500{% endif %} rounded-full" style="width: {{ audit.inbox_placement_rate }}%;"></div>
+                </div>
+                <p class="text-[11px] text-slate-400">
+                    Estimated <strong>~{{ 100 - audit.inbox_placement_rate }}%</strong> of outbound sales/client communications land in Junk or Spam.
+                </p>
+            </div>
+
+            <!-- Provider & Status -->
+            <div class="flex flex-col justify-center space-y-2 bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-xs font-mono">
+                <div><span class="text-slate-400">Mail Provider:</span> <strong class="text-white">{{ audit.mx_provider }}</strong></div>
+                <div><span class="text-slate-400">SPF Auth:</span> <strong class="{% if audit.spf_status == 'PASS' %}text-emerald-400{% else %}text-rose-400{% endif %}">{{ audit.spf_status }}</strong></div>
+                <div><span class="text-slate-400">DMARC Policy:</span> <strong class="{% if audit.dmarc_policy in ['quarantine', 'reject'] %}text-emerald-400{% else %}text-rose-400{% endif %}">{{ audit.dmarc_policy }}</strong></div>
+                <div><span class="text-slate-400">DKIM Signature:</span> <strong class="{% if audit.dkim_status == 'PASS' %}text-emerald-400{% else %}text-amber-400{% endif %}">{{ audit.dkim_status }}</strong></div>
+            </div>
+        </div>
+
+        <!-- Detected Vulnerabilities -->
+        <div class="space-y-4">
+            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                <span>🔍 Identified DNS Vulnerabilities</span>
+                <span class="text-xs font-mono text-slate-500">({{ issues|length }} found)</span>
+            </h2>
+
+            <div class="space-y-3">
+                {% for issue in issues %}
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition rounded-2xl p-5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded {% if issue.severity == 'CRITICAL' %}bg-rose-500/20 text-rose-400 border border-rose-500/30{% elif issue.severity == 'HIGH' %}bg-amber-500/20 text-amber-400 border border-amber-500/30{% else %}bg-blue-500/20 text-blue-400 border border-blue-500/30{% endif %}">
+                            {{ issue.severity }} &bull; -{{ issue.penalty }} PTS
+                        </span>
+                        <span class="text-xs font-mono text-slate-500">DNS Alignment</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-white">{{ issue.title }}</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">{{ issue.description }}</p>
+                </div>
+                {% else %}
+                <div class="bg-emerald-950/20 border border-emerald-500/30 rounded-2xl p-6 text-center text-emerald-300 text-sm font-medium">
+                    ✅ No major vulnerabilities detected! Domain records conform to standard deliverability guidelines.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Fix Blueprint -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-5">
+            <div class="border-b border-slate-800 pb-4">
+                <span class="text-xs font-mono text-blue-400 uppercase font-bold tracking-wider">Turnkey Fix Blueprint</span>
+                <h2 class="text-lg font-bold text-white mt-1">Recommended DNS Records to Publish</h2>
+                <p class="text-xs text-slate-400 mt-1">Publish these records in your DNS provider (Cloudflare, GoDaddy, Namecheap) to restore 95%+ inbox placement.</p>
+            </div>
+
+            <div class="space-y-4">
+                {% for item in blueprint %}
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-xs space-y-2">
+                    <div class="flex items-center justify-between text-slate-400">
+                        <span><strong class="text-blue-400">{{ item.type }}</strong> Record for Host: <strong class="text-white">{{ item.host }}</strong></span>
+                        <span class="text-[11px] text-slate-500">{{ item.purpose }}</span>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-xl border border-slate-800 text-slate-200 select-all overflow-x-auto">
+                        <code>{{ item.value }}</code>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Action / Checkout Card -->
+        <div class="bg-gradient-to-r from-blue-950/80 to-indigo-950/80 border border-blue-500/40 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
+            <div class="max-w-xl mx-auto space-y-2">
+                <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">Turnkey Implementation Sprint</span>
+                <h3 class="text-2xl font-black text-white">Have Our Specialist Deploy & Guarantee Your Inbox Fix</h3>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    We deploy custom DMARC reporting endpoints, resolve SPF lookups, configure DKIM cryptographic alignment, and set up secondary outbound domains in under 24 hours.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl space-y-3">
+                    <div class="text-xs font-bold text-slate-400 uppercase">Primary Domain Sprint</div>
+                    <div class="text-2xl font-black text-white">AED {{ "{:,.0f}".format(settings.DEFAULT_DEAL_VALUE) }} <span class="text-xs font-normal text-slate-400">one-time</span></div>
+                    <ul class="text-xs text-slate-300 space-y-1.5">
+                        <li>✓ Full SPF, DKIM, DMARC alignment</li>
+                        <li>✓ DMARC report monitoring mailbox</li>
+                        <li>✓ Custom tracking domain setup</li>
+                    </ul>
+                    <a href="/checkout/{{ audit.domain }}?tier=primary" class="block text-center py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-md shadow-blue-600/30">
+                        Order Primary Domain Fix &rarr;
+                    </a>
+                </div>
+
+                <div class="bg-slate-900/90 border border-blue-500/40 p-5 rounded-2xl space-y-3 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-bl-lg text-white">RECOMMENDED</div>
+                    <div class="text-xs font-bold text-blue-400 uppercase">Full Outbound Infrastructure</div>
+                    <div class="text-2xl font-black text-white">AED {{ "{:,.0f}".format(settings.INFRASTRUCTURE_DEAL_VALUE) }} <span class="text-xs font-normal text-slate-400">one-time</span></div>
+                    <ul class="text-xs text-slate-300 space-y-1.5">
+                        <li>✓ 3 Isolated secondary sending domains</li>
+                        <li>✓ 6 Google Workspace/M365 accounts</li>
+                        <li>✓ Automated inbox warmup integration</li>
+                    </ul>
+                    <a href="/checkout/{{ audit.domain }}?tier=outbound" class="block text-center py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-md shadow-emerald-600/30">
+                        Order Outbound Suite &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-400">
+                Direct questions? Connect with <strong>{{ settings.OPERATOR_NAME }}</strong> via email at <a href="mailto:{{ settings.OPERATOR_EMAIL }}" class="text-blue-400 underline font-medium">{{ settings.OPERATOR_EMAIL }}</a> or on Telegram at <a href="https://t.me/dreamer_comrade" target="_blank" class="text-blue-400 underline font-medium">@dreamer_comrade</a>
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

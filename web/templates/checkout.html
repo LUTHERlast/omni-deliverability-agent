@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout & Setup Authorization &bull; {{ domain }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #080d1a; color: #f1f5f9; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-6 flex flex-col justify-between">
+
+    <!-- Top Navigation Header -->
+    <div class="max-w-5xl mx-auto w-full mb-8 flex items-center justify-between">
+        <a href="/audit/{{ domain }}" class="inline-flex items-center text-xs font-semibold text-slate-400 hover:text-white transition">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            &larr; Back to Domain Audit Scorecard
+        </a>
+        <div class="flex items-center space-x-3 text-xs">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+                100% Async Turnkey SLA
+            </span>
+            <a href="/master" class="text-xs text-slate-400 hover:text-white transition">Master Portfolio &rarr;</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto w-full flex-1">
+        
+        <div id="checkout-container" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Package Details & Pricing -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <div class="glass-panel rounded-3xl p-6 sm:p-7 space-y-5 border-blue-500/30 shadow-2xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-widest">Order Summary</span>
+                        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">{{ domain }}</span>
+                    </div>
+
+                    <!-- Package Selector Tabs -->
+                    <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
+                        <button type="button" onclick="selectTier('primary')" id="tab-primary" class="flex-1 py-2 text-xs font-bold rounded-lg transition {% if tier == 'primary' %}bg-blue-600 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                            Primary (AED 1,450)
+                        </button>
+                        <button type="button" onclick="selectTier('outbound')" id="tab-outbound" class="flex-1 py-2 text-xs font-bold rounded-lg transition {% if tier == 'outbound' %}bg-emerald-600 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                            Outbound Suite (AED 3,650)
+                        </button>
+                    </div>
+
+                    <div id="tier-details" class="space-y-4">
+                        <!-- Dynamic Tier Header -->
+                        <div>
+                            <h2 id="tier-title" class="text-xl font-black text-white">
+                                {% if tier == 'outbound' %}Full Outbound Infrastructure Suite{% else %}Primary Domain Deliverability Sprint{% endif %}
+                            </h2>
+                            <p id="tier-desc" class="text-xs text-slate-400 mt-1">
+                                {% if tier == 'outbound' %}
+                                Complete isolation architecture with 3 secondary domains & 6 warmed mailboxes.
+                                {% else %}
+                                Turnkey SPF, DKIM, and DMARC quarantine compliance for {{ domain }}.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <!-- Price Tag -->
+                        <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-baseline justify-between">
+                            <span class="text-xs text-slate-400 font-medium">One-Time Implementation</span>
+                            <span id="tier-price" class="text-3xl font-black font-mono {% if tier == 'outbound' %}text-emerald-400{% else %}text-blue-400{% endif %}">
+                                {% if tier == 'outbound' %}AED 3,650{% else %}AED 1,450{% endif %}
+                            </span>
+                        </div>
+
+                        <!-- Deliverables List -->
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <span class="font-mono text-slate-500 uppercase font-bold text-[10px] tracking-wider">Included Deliverables:</span>
+                            <ul id="tier-features" class="space-y-2">
+                                {% if tier == 'outbound' %}
+                                <li class="flex items-start gap-2">✓ <span>3 Secondary outbound sending domains purchased & configured</span></li>
+                                <li class="flex items-start gap-2">✓ <span>6 Google Workspace or Microsoft 365 business accounts</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Automated AI inbox warmup & deliverability protection</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Full SPF, DKIM, DMARC alignment across all sending points</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Custom tracking domain setup (white-labeled SSL)</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Guaranteed &lt; 24 hour turnaround</span></li>
+                                {% else %}
+                                <li class="flex items-start gap-2">✓ <span>Strict SPF flattening & DNS lookup optimization</span></li>
+                                <li class="flex items-start gap-2">✓ <span>2048-bit DKIM cryptographic key alignment</span></li>
+                                <li class="flex items-start gap-2">✓ <span>DMARC policy escalation to <code>p=quarantine</code></span></li>
+                                <li class="flex items-start gap-2">✓ <span>DMARC aggregate reporting endpoint provisioning</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Custom tracking domain configuration</span></li>
+                                <li class="flex items-start gap-2">✓ <span>Guaranteed 2024+ Google & Yahoo inbox placement compliance</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center gap-2">
+                        <span class="text-emerald-400 font-bold">🔒 Zero Risk SLA:</span>
+                        <span>Full compliance verification report provided upon DNS propagation.</span>
+                    </div>
+                </div>
+
+                <!-- Specialist Guarantee Box -->
+                <div class="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 text-xs space-y-2">
+                    <div class="font-bold text-white flex items-center gap-2">
+                        <span>🛡️</span>
+                        <span>Delivered by Athul Raj</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed text-[11px]">
+                        Infrastructure Specialist &bull; <code>athulaisolutions@gmail.com</code> &bull; All configurations are executed asynchronously without interrupting your live business emails.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Asynchronous Checkout Form -->
+            <div class="lg:col-span-7">
+                <div class="glass-panel rounded-3xl p-7 sm:p-9 space-y-6 border-slate-800 shadow-2xl">
+                    
+                    <div class="border-b border-slate-800 pb-4">
+                        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">Async Intake & Checkout</span>
+                        <h1 class="text-2xl font-black text-white mt-1">Authorize Turnkey Deployment</h1>
+                        <p class="text-xs text-slate-400 mt-1">Enter your organization details to initialize automated record provisioning.</p>
+                    </div>
+
+                    <form id="checkout-form" onsubmit="processOrder(event)" class="space-y-4">
+                        <input type="hidden" id="order-domain" value="{{ domain }}">
+                        <input type="hidden" id="order-tier" value="{{ tier }}">
+                        <input type="hidden" id="order-amount" value="{% if tier == 'outbound' %}3650.0{% else %}1450.0{% endif %}">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1.5">Company / Business Name *</label>
+                                <input type="text" id="order-company" required placeholder="e.g. Acme Corp" value="{{ lead.company_name if lead else domain.split('.')[0].capitalize() }}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1.5">Contact Person *</label>
+                                <input type="text" id="order-contact" required placeholder="e.g. Alex Smith" value="{{ lead.contact_name if lead and lead.contact_name else '' }}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1.5">Work / Notification Email *</label>
+                            <input type="email" id="order-email" required placeholder="e.g. alex@acme.com" value="{{ lead.contact_email if lead else '' }}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-mono">
+                            <span class="text-[11px] text-slate-500 mt-1 block">Your invoice, verification report, and DNS blueprint will be sent here.</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1.5">DNS Host / Domain Registrar *</label>
+                            <select id="order-dns-provider" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                                <option value="Cloudflare">Cloudflare (Recommended)</option>
+                                <option value="GoDaddy">GoDaddy</option>
+                                <option value="Google Domains / Cloud DNS">Google Domains / Cloud DNS</option>
+                                <option value="Namecheap">Namecheap</option>
+                                <option value="AWS Route 53">AWS Route 53</option>
+                                <option value="Microsoft 365 / Azure DNS">Microsoft 365 / Azure DNS</option>
+                                <option value="Hostinger / Bluehost">Hostinger / Bluehost</option>
+                                <option value="Other Provider">Other Provider</option>
+                            </select>
+                        </div>
+
+                        <!-- Payment Settlement Method -->
+                        <div class="space-y-2 pt-2">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono mb-1">Select Payment Settlement Method *</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="border border-blue-500/60 bg-blue-950/30 p-3 rounded-xl cursor-pointer flex flex-col items-center text-center transition hover:border-blue-400">
+                                    <input type="radio" name="payment-method" value="CARD" checked class="hidden">
+                                    <span class="text-base mb-1">💳</span>
+                                    <span class="text-xs font-bold text-white">Stripe / Card</span>
+                                    <span class="text-[10px] text-blue-300">Instant</span>
+                                </label>
+                                <label class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl cursor-pointer flex flex-col items-center text-center transition hover:border-slate-500">
+                                    <input type="radio" name="payment-method" value="WIRE" class="hidden">
+                                    <span class="text-base mb-1">🏛️</span>
+                                    <span class="text-xs font-bold text-white">Bank Wire</span>
+                                    <span class="text-[10px] text-slate-400">IBAN / ACH</span>
+                                </label>
+                                <label class="border border-slate-700 bg-slate-900/60 p-3 rounded-xl cursor-pointer flex flex-col items-center text-center transition hover:border-slate-500">
+                                    <input type="radio" name="payment-method" value="CRYPTO" class="hidden">
+                                    <span class="text-base mb-1">⚡</span>
+                                    <span class="text-xs font-bold text-white">USDC / USDT</span>
+                                    <span class="text-[10px] text-slate-400">Stablecoin</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-4">
+                            <button type="submit" id="btn-submit-order" class="w-full py-4 px-6 rounded-2xl text-sm font-black text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/20 transition transform active:scale-98 flex items-center justify-center gap-2">
+                                <span id="btn-text">Confirm Order & Authorize Setup ({% if tier == 'outbound' %}AED 3,650{% else %}AED 1,450{% endif %}) &rarr;</span>
+                            </button>
+                            <p class="text-[11px] text-center text-slate-500 mt-2">
+                                🔒 Secure 256-bit encrypted transaction &bull; 100% Async Implementation Guarantee
+                            </p>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Success Confirmation State (Hidden until completed) -->
+        <div id="order-success" class="hidden glass-panel rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-6 border-emerald-500/40 shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl mx-auto">
+                ✓
+            </div>
+            
+            <div class="space-y-2">
+                <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">Order Confirmed & Paid</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">Turnkey Implementation Authorized!</h2>
+                <p class="text-xs text-slate-300 max-w-md mx-auto" id="success-lead-msg">
+                    Your deliverability sprint for <strong id="success-domain" class="text-white">{{ domain }}</strong> is officially queued for rapid deployment.
+                </p>
+            </div>
+
+            <!-- Receipt Box -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 text-left font-mono text-xs space-y-2 max-w-md mx-auto">
+                <div class="flex justify-between text-slate-400">
+                    <span>Invoice Ref:</span>
+                    <strong id="success-inv-num" class="text-emerald-400">INV-DELIV-0001</strong>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                    <span>Amount Paid:</span>
+                    <strong id="success-amount" class="text-white">AED 1,450</strong>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                    <span>Package:</span>
+                    <strong id="success-tier" class="text-white">Primary Domain Fix (AED 1,450)</strong>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                    <span>Fulfillment Status:</span>
+                    <span class="text-emerald-400 font-bold">QUEUED (&lt; 24h SLA)</span>
+                </div>
+            </div>
+
+            <div class="text-xs text-slate-400 space-y-2 max-w-md mx-auto">
+                <p>An automated setup alert and Telegram task notification have been broadcast to Athul Raj.</p>
+                <p>DNS configuration verification will be delivered directly to <span id="success-email-display" class="text-white font-medium">your email</span>.</p>
+            </div>
+
+            <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                <a id="btn-view-invoice" href="#" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                    View Itemized Tax Invoice &rarr;
+                </a>
+                <a href="/master" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 transition">
+                    Open Master Fleet Dashboard &rarr;
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-5xl mx-auto w-full mt-10 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500 font-mono">
+        OmniDeliverability AI &bull; Operator: {{ settings.OPERATOR_NAME }} &bull; {{ settings.OPERATOR_EMAIL }}
+    </footer>
+
+    <!-- JavaScript Tier Switching & Async Checkout Processing -->
+    <script>
+        let currentTier = "{{ tier }}";
+
+        function selectTier(tier) {
+            currentTier = tier;
+            document.getElementById("order-tier").value = tier;
+            
+            const btnText = document.getElementById("btn-text");
+            const tierTitle = document.getElementById("tier-title");
+            const tierDesc = document.getElementById("tier-desc");
+            const tierPrice = document.getElementById("tier-price");
+            const tierFeatures = document.getElementById("tier-features");
+            const tabPrimary = document.getElementById("tab-primary");
+            const tabOutbound = document.getElementById("tab-outbound");
+            const orderAmount = document.getElementById("order-amount");
+
+            if (tier === 'outbound') {
+                tabPrimary.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+                tabOutbound.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-emerald-600 text-white shadow";
+                
+                tierTitle.innerText = "Full Outbound Infrastructure Suite";
+                tierDesc.innerText = "Complete isolation architecture with 3 secondary domains & 6 warmed mailboxes.";
+                tierPrice.innerText = "AED 3,650";
+                tierPrice.className = "text-3xl font-black font-mono text-emerald-400";
+                orderAmount.value = "3650.0";
+                btnText.innerText = "Confirm Order & Authorize Setup (AED 3,650) →";
+
+                tierFeatures.innerHTML = `
+                    <li class="flex items-start gap-2">✓ <span>3 Secondary outbound sending domains purchased & configured</span></li>
+                    <li class="flex items-start gap-2">✓ <span>6 Google Workspace or Microsoft 365 business accounts</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Automated AI inbox warmup & deliverability protection</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Full SPF, DKIM, DMARC alignment across all sending points</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Custom tracking domain setup (white-labeled SSL)</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Guaranteed &lt; 24 hour turnaround</span></li>
+                `;
+            } else {
+                tabPrimary.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-blue-600 text-white shadow";
+                tabOutbound.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+
+                tierTitle.innerText = "Primary Domain Deliverability Sprint";
+                tierDesc.innerText = "Turnkey SPF, DKIM, and DMARC quarantine compliance for {{ domain }}.";
+                tierPrice.innerText = "AED 1,450";
+                tierPrice.className = "text-3xl font-black font-mono text-blue-400";
+                orderAmount.value = "1450.0";
+                btnText.innerText = "Confirm Order & Authorize Setup (AED 1,450) →";
+
+                tierFeatures.innerHTML = `
+                    <li class="flex items-start gap-2">✓ <span>Strict SPF flattening & DNS lookup optimization</span></li>
+                    <li class="flex items-start gap-2">✓ <span>2048-bit DKIM cryptographic key alignment</span></li>
+                    <li class="flex items-start gap-2">✓ <span>DMARC policy escalation to <code>p=quarantine</code></span></li>
+                    <li class="flex items-start gap-2">✓ <span>DMARC aggregate reporting endpoint provisioning</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Custom tracking domain configuration</span></li>
+                    <li class="flex items-start gap-2">✓ <span>Guaranteed 2024+ Google & Yahoo inbox placement compliance</span></li>
+                `;
+            }
+        }
+
+        async function processOrder(e) {
+            e.preventDefault();
+            const btn = document.getElementById("btn-submit-order");
+            const btnText = document.getElementById("btn-text");
+            btn.disabled = true;
+            btnText.innerText = "Securing Order & Provisioning Blueprint...";
+
+            const payload = {
+                domain: document.getElementById("order-domain").value.trim(),
+                tier: currentTier,
+                amount: parseFloat(document.getElementById("order-amount").value),
+                company_name: document.getElementById("order-company").value.trim(),
+                contact_name: document.getElementById("order-contact").value.trim(),
+                contact_email: document.getElementById("order-email").value.trim(),
+                dns_provider: document.getElementById("order-dns-provider").value,
+                payment_method: document.querySelector('input[name="payment-method"]:checked').value
+            };
+
+            try {
+                const resp = await fetch("/api/checkout/complete", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+
+                if (resp.ok && data.status === "SUCCESS") {
+                    document.getElementById("checkout-container").classList.add("hidden");
+                    document.getElementById("order-success").classList.remove("hidden");
+                    
+                    document.getElementById("success-inv-num").innerText = data.invoice_num || "INV-DELIV-0001";
+                    document.getElementById("success-amount").innerText = `AED ${payload.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                    document.getElementById("success-tier").innerText = currentTier === 'outbound' ? 'Full Outbound Infrastructure (AED 3,650)' : 'Primary Domain Sprint (AED 1,450)';
+                    document.getElementById("success-email-display").innerText = payload.contact_email;
+                    document.getElementById("btn-view-invoice").href = `/invoice/${data.lead_id}`;
+                } else {
+                    alert(`Order processing error: ${data.message || 'Please check input fields.'}`);
+                    btn.disabled = false;
+                    btnText.innerText = currentTier === 'outbound' ? "Confirm Order & Authorize Setup (AED 3,650) →" : "Confirm Order & Authorize Setup (AED 1,450) →";
+                }
+            } catch (err) {
+                alert(`Network error: ${err.message}`);
+                btn.disabled = false;
+                btnText.innerText = currentTier === 'outbound' ? "Confirm Order & Authorize Setup (AED 3,650) →" : "Confirm Order & Authorize Setup (AED 1,450) →";
+            }
+        }
+    </script>
+</body>
+</html>
