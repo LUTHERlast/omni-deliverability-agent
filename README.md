@@ -16,10 +16,13 @@
 
 ## 🚀 Cloud Deployment (Render & Web)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/LUTHERlast/omni-deliverability-agent)
+
 This repository includes a turnkey `render.yaml` Blueprint.
 
-### 1. One-Click Render Deployment
-1. Connect this GitHub repository (`LUTHERlast/omni-deliverability-agent`) to **Render.com**.
+### 1. One-Click Instant Deployment
+1. Click the **Deploy to Render** button above, or open:  
+   👉 **[https://render.com/deploy?repo=https://github.com/LUTHERlast/omni-deliverability-agent](https://render.com/deploy?repo=https://github.com/LUTHERlast/omni-deliverability-agent)**
 2. Select **New + -> Blueprint** or **New Web Service**.
 3. Render will automatically detect `render.yaml` and configure:
    - **Build Command**: `pip install -r requirements.txt`
